@@ -6,4 +6,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Test project
-        run: cd ../ && pwd
+        uses: ./.github/actions/{path}
+        run: ./test.sh

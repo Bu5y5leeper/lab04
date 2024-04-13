@@ -1,0 +1,9 @@
+name: tp-lab-actions
+run-name: ${{ github.actor }} is running TPLab04
+on: [push]
+jobs:
+  check-bats-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test project
+        run: ./test.sh

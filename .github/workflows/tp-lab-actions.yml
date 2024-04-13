@@ -6,6 +6,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Test project
-      - uses: ./.github/actions/{path}
-        with: 
-          run: ./test.sh
+        uses: ./.github/workflows/
+        run: ./test.sh

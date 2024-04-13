@@ -2,7 +2,8 @@ name: tp-lab-actions
 run-name: ${{ github.actor }} is running TPLab04
 on: [push]
 jobs:
-  runs-on: ubuntu-latest
-  steps:
-    - name: Test project
-      run: ls
+  container-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test project
+        run: ls

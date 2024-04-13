@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.22) # Проверка версии CMake.
+									# Если версия установленой программы
+									# старее указаной, произайдёт аварийный выход.
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+project(solver_lib)				# Название проекта
 
-project(solver_lib)
+set(SOURCE_LIB solver.cpp solver.h)		# Установка переменной со списком исходников
 
-add_library(solver_lib STATIC solver.cpp)
-target_include_directories(solver_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+add_library(solver_lib STATIC ${SOURCE_LIB})# Создание статической библиотеки

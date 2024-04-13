@@ -18,68 +18,24 @@ cmake version 3.22.1
 CMake suite maintained and supported by Kitware (kitware.com/cmake).
 ```
 ---
-```bash
-cd ./formatter_lib/
-```
----
-```bash
-cat >> ./CMakeLists.txt << EOF
-cmake_minimum_required(VERSION 3.22)
-EOF
-```
----
-```bash
-cat >> ./CMakeLists.txt << EOF
-project(formatter)
-EOF
-```
----
-```bash
-cat >> CMakeLists.txt <<EOF
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-EOF
-```
----
-```bash
-cat >> CMakeLists.txt <<EOF
-set(SOURCES formatter.cpp)
-set(HEADERS formatter.h)
-EOF
-```
----
-```bash
-cat >> CMakeLists.txt <<EOF
-add_library(formatter \${SOURCES} \${HEADERS})
-EOF
-```
----
-```bash
-cat >> CMakeLists.txt <<EOF
-target_include_directories(formatter PUBLIC \${CMAKE_CURRENT_SOURCE_DIR})
-EOF
-```
----
-```bash
 
-````
-### Содержимое CMakeLists.txt:
+### Содержимое formatter_lib/CMakeLists.txt:
 ```
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.22) # Проверка версии CMake.
+									 # Если версия установленой программы
+									 # старее указаной, произайдёт аварийный выход.
 
-project(formatter)
+project(formatter_lib)				# Название проекта
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(SOURCE_LIB formatter.cpp formatter.h)		# Установка переменной со списком исходников
 
-set(SOURCES formatter.cpp)
-set(HEADERS formatter.h)
-
-add_library(formatter STATIC ${SOURCES} ${HEADERS})
-
-target_include_directories(formatter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+add_library(formatter_lib STATIC ${SOURCE_LIB}) # Создание статической библиотеки
 ```
 ---
+```bash
+cmake -H. -B_build
+cmake --build ./_build
+```
 
 ### Задание 2
 У компании "Formatter Inc." есть перспективная библиотека,
@@ -92,64 +48,23 @@ target_include_directories(formatter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 cd ../formatter_ex_lib/
 ```
 ---
-```bash
-cat >> ./CMakeLists.txt << EOF
-cmake_minimum_required(VERSION 3.22)
-EOF
-```
----
-```bash
-cat >> CMakeLists.txt <<EOF
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-EOF
-```
----
-```bash
-cat >> ./CMakeLists.txt << EOF
-project(ex_formatter)
-EOF
-```
----
-```bash
-cat >> ./CMakeLists.txt << EOF
-add_library(formatter_ex STATIC formatter_ex.cpp)
-EOF
-```
----
-```bash
-cat >> ./CMakeLists.txt << EOF
-add_subdirectory(\${CMAKE_CURRENT_SOURCE_DIR}/../formatter_lib \${CMAKE_CURRENT_SOURCE_DIR}/formatter)
-EOF
-```
----
-```bash
-cat >> CMakeLists.txt << EOF
-target_include_directories(formatter_ex PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-EOF
-```
----
-```bash
-cat >> CMakeLists.txt << EOF
-target_link_libraries(formatter_ex formatter)
- EOF
-```
----
-### Содержимое CMakeLists.txt:
+### Содержимое formatter_ex_lib/CMakeLists.txt:
 ```
 cmake_minimum_required(VERSION 3.22)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-project(ex_formatter)
+project(formatter_ex_lib)
 
-add_library(formatter_ex STATIC formatter_ex.cpp)
+set(SOURCE_LIB formatter_ex.cpp)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../formatter_lib ${CMAKE_CURRENT_SOURCE_DIR}/formatter)
+add_library(formatter_ex_lib STATIC ${SOURCE_LIB})
 
-target_include_directories(formatter_ex PUBLIC )
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../formatter_lib formatter_lib)
 
-target_link_libraries(formatter_ex formatter)
+target_link_libraries(formatter_ex_lib PUBLIC formatter_lib)
+target_include_directories(formatter_ex_lib PUBLIC
+				"${CMAKE_CURRENT_SOURCE_DIR}"
+				"${CMAKE_CURRENT_SOURCE_DIR}/../formatter_lib")
+
 ```
 
 ### Задание 3
@@ -163,168 +78,179 @@ target_link_libraries(formatter_ex formatter)
 cd ../formatter_ex_lib/
 ```
 ---
-```bash
-cat >> ./CMakeLists.txt << EOF
-cmake_minimum_required(VERSION 3.22)
-EOF
+### Содержимое hello_world_application/CMakeLists.txt:
 ```
----
-```bash
-cat >> CMakeLists.txt <<EOF
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-EOF
-```
----
-```bash
-cat >> ./CMakeLists.txt << EOF
-project(hello_world)
-EOF
-```
----
-```bash
-cat >> ./CMakeLists.txt << EOF
-add_subdirectory(\${CMAKE_CURRENT_SOURCE_DIR}/../formatter_ex \${CMAKE_CURRENT_SOURCE_DIR}/formatter_ex)
-EOF
-```
----
-```bash
-cat >> CMakeLists.txt << EOF
-add_executable(sources \${CMAKE_CURRENT_SOURCE_DIR})
-EOF
-```
----
-```bash
-cat >> CMakeLists.txt << EOF
-target_link_libraries(sources formatter_ex)
- EOF
-```
----
-### Содержимое CMakeLists.txt:
-```
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.22) # Проверка версии CMake.
+									 # Если версия установленой программы
+									 # старее указаной, произайдёт аварийный выход.
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+project(hello_world)				 # Название проекта
 
-project(hello_world)
+set(SOURCE_EXE hello_world.cpp)			 # Установка переменной со списком исходников
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../formatter_ex_lib ${CMAKE_CURRENT_SOURCE_DIR}/formatter_ex)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../formatter_ex_lib/)
 
-add_executable(sources ${CMAKE_CURRENT_SOURCE_DIR})
+add_executable(main ${SOURCE_EXE})	 # Создает исполняемый файл с именем main
 
-target_link_libraries(sources formatter_ex)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../formatter_ex_lib/ formatter_ex_lib)
+
+target_link_libraries(main formatter_ex_lib)		 # Линковка программы с библиотекой
 ```
 
 ### Solver_application
 ```bash
 cd ../solver_application/
 ```
----
-```bash
-cat >> ./CMakeLists.txt << EOF
-cmake_minimum_required(VERSION 3.22)
-EOF
+### Содержимое solver_application/CMakeLists.txt:
 ```
----
-```bash
-cat >> CMakeLists.txt <<EOF
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-EOF
-```
----
-```bash
-cat >> ./CMakeLists.txt << EOF
-project(solver)
-EOF
-```
----
-```bash
-cat >> ./CMakeLists.txt << EOF
-add_subdirectory(\${CMAKE_CURRENT_SOURCE_DIR}/../solver_lib \${CMAKE_CURRENT_SOURCE_DIR}/solver_lib)
-add_subdirectory(\${CMAKE_CURRENT_SOURCE_DIR}/../formatter_ex \${CMAKE_CURRENT_SOURCE_DIR}/formatter_ex)
-EOF
-```
----
-```bash
-cat >> CMakeLists.txt << EOF
-add_executable(sources equation.cpp)
-EOF
-```
----
-```bash
-cat >> CMakeLists.txt << EOF
-target_link_libraries(sources solver_lib)
-target_link_libraries(sources formatter_ex)
- EOF
-```
----
-### Содержимое CMakeLists.txt:
-```
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.22) # Проверка версии CMake.
+									# Если версия установленой программы
+									# старее указаной, произайдёт аварийный выход.
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+project(solver)				# Название проекта
 
-project(solver)
+set(SOURCE_EXE equation.cpp)			# Установка переменной со списком исходников
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../solver_lib ${CMAKE_CURRENT_SOURCE_DIR}/solver_lib)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../formatter_ex_lib ${CMAKE_CURRENT_SOURCE_DIR}/formatter_ex)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../formatter_ex_lib/"
+					"${CMAKE_CURRENT_SOURCE_DIR}/../solver_lib/")
 
-add_executable(source equation.cpp)
+add_executable(main ${SOURCE_EXE})	# Создает исполняемый файл с именем main
 
-target_link_libraries(source solver_lib)
-target_link_libraries(source formatter_ex)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../formatter_ex_lib/ formatter_ex_lib)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../solver_lib/ solver_lib)
+
+target_link_libraries(main formatter_ex_lib solver_lib)		# Линковка программы с библиотекой
 ```
 ```bash
 cd ../solver_lib/
 ```
 ---
-```bash
-cat >> ./CMakeLists.txt << EOF
-cmake_minimum_required(VERSION 3.22)
-EOF
+### Содержимое solver_lib/CMakeLists.txt:
 ```
----
-```bash
-cat >> CMakeLists.txt <<EOF
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-EOF
-```
----
-```bash
-cat >> ./CMakeLists.txt << EOF
-project(solver_lib)
-EOF
-```
----
-```bash
-cat >> CMakeLists.txt << EOF
-add_library(solver_lib STATIC solver.cpp)
-EOF
-```
----
-```bash
-cat >> CMakeLists.txt << EOF
-target_include_directories(solver_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
- EOF
-```
----
-### Содержимое CMakeLists.txt:
-```
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.22) # Проверка версии CMake.
+									# Если версия установленой программы
+									# старее указаной, произайдёт аварийный выход.
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+project(solver_lib)				# Название проекта
 
-project(solver_lib)
+set(SOURCE_LIB solver.cpp solver.h)		# Установка переменной со списком исходников
 
-add_library(solver_lib STATIC solver.cpp)
-target_include_directories(solver_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+add_library(solver_lib STATIC ${SOURCE_LIB})# Создание статической библиотеки
 ```
 
+### Компиляция проекта
+1. formatter_lib
+```bash
+cmake -H. -B_build
+cmake --build ./_build
+```
+```
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/bu5y/Bu5y5leeper/workspace/projects/lab03_dz/formatter_lib/_build
+```
+---
+2. formatter_ex_lib
+```bash
+cmake -H. -B_build
+cmake --build ./_build
+```
+```
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/bu5y/Bu5y5leeper/workspace/projects/lab03_dz/formatter_ex_lib/_build
+```
+---
+3. hello_world
+```bash
+cmake -H. -B_build
+cmake --build ./_build
+```
+```
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/bu5y/Bu5y5leeper/workspace/projects/lab03_dz/hello_world_application/_build
+```
+4. solver_lib
+```bash
+cmake -H. -B_build
+cmake --build ./_build
+```
+```
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/bu5y/Bu5y5leeper/workspace/projects/lab03_dz/solver_lib/_build
+```
+5. solver_application
+```bash
+cmake -H. -B_build
+cmake --build ./_build
+```
+```
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/bu5y/Bu5y5leeper/workspace/projects/lab03_dz/solver_application/_build
+```
 ```
 Copyright (c) 2015-2021 The ISC Authors
 ```

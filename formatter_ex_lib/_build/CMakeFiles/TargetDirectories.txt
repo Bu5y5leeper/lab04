@@ -1,0 +1,3 @@
+/home/bu5y/Bu5y5leeper/workspace/projects/lab03_dz/formatter_ex_lib/_build/CMakeFiles/formatter_ex.dir
+/home/bu5y/Bu5y5leeper/workspace/projects/lab03_dz/formatter_ex_lib/_build/CMakeFiles/edit_cache.dir
+/home/bu5y/Bu5y5leeper/workspace/projects/lab03_dz/formatter_ex_lib/_build/CMakeFiles/rebuild_cache.dir

@@ -1,12 +1,15 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.22) # Проверка версии CMake.
+									 # Если версия установленой программы
+									 # старее указаной, произайдёт аварийный выход.
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+project(hello_world)				 # Название проекта
 
-project(hello_world)
+set(SOURCE_EXE hello_world.cpp)			 # Установка переменной со списком исходников
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../formatter_ex_lib ${CMAKE_CURRENT_SOURCE_DIR}/formatter_ex)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../formatter_ex_lib/)
 
-add_executable(sources ${CMAKE_CURRENT_SOURCE_DIR})
+add_executable(main ${SOURCE_EXE})	 # Создает исполняемый файл с именем main
 
-target_link_libraries(sources formatter_ex)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../formatter_ex_lib/ formatter_ex_lib)
+
+target_link_libraries(main formatter_ex_lib)		 # Линковка программы с библиотекой
